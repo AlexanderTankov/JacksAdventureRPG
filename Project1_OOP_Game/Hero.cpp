@@ -76,8 +76,8 @@ Hero& Hero::operator = (const Hero& other)
 		this->Level = other.getLevel();
 		this->gear = other.getGear();
 		this->ownBag = other.getOwnBag();
-		return *this;
 	}
+	return *this;
 }
 
 
@@ -221,7 +221,7 @@ void Hero::addItemInBag(const Item* newItem)
 size_t Hero::reduceAttack(size_t Defense) const
 {
 	size_t Attack = getAttack();
-	Attack -= ((Defense*2.0)/100.0)*getAttack();
+	Attack -= ((Defense*2.0)/100.0)*(double)getAttack();
 	return Attack;
 }
 

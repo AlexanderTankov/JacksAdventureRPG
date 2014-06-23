@@ -230,7 +230,7 @@ void Map::loadMap(ifstream& fin)
 		{
 			this->ppMap[i][j]->setRow(i);
 			this->ppMap[i][j]->setColumn(j);
-			this->ppMap[i][j]->setSymbol(temp[i][j]);
+			this->ppMap[i][j]->setSymbol((char)((int)temp[i][j] + 128));
 		}
 	}
 
@@ -255,52 +255,67 @@ void Map::create()
 //Moving hero up
 void Map::moveHeroUp()
 {
-	switch (this->ppMap[this->ownHero.getRow() - 1][this->ownHero.getColumn()]->getSymbol())
+	moveHero(-1, 0);
+	
+}
+
+//Moving hero down
+void Map::moveHero(int x, int y)
+{
+	int curX = this->ownHero.getRow();
+	int curY = this->ownHero.getColumn();
+	int newX = curX + x;
+	int newY = curY + y;
+	switch ((char)((int)(this->ppMap[newX][newY]->getSymbol()) - 128))
 	{
-	case '#':
+	case '0':
 		cout << " Cant move hero there!" << endl;
 		break;
-	case '/':
+	case '2':
 		Cell* temp;
-		temp = this->ppMap[this->ownHero.getRow()][this->ownHero.getColumn()]; 
-		this->ppMap[this->ownHero.getRow()][this->ownHero.getColumn()] = this->ppMap[this->ownHero.getRow() - 1][this->ownHero.getColumn()];
-		this->ppMap[this->ownHero.getRow() - 1][this->ownHero.getColumn()] = temp;
+		temp = this->ppMap[curX][curY];
+		this->ppMap[curX][curY] = this->ppMap[newX][newY];
+		this->ppMap[newX][newY] = temp;
 
-		this->ownHero.setRow(this->ownHero.getRow() - 1);
+		this->ownHero.setRow(newX);
+		this->ownHero.setColumn(newY);
 		system("cls");
 		printMap();
 		break;
-	case '%':
+	case 'j':
 		system("cls");
 		printMap();
 		this->ownHero.attackMonster(MonstersOnMap);
 		if (this->MonstersOnMap.getLife() == 0)
 		{
-			this->ppMap[this->ownHero.getRow()][this->ownHero.getColumn()]->setSymbol('/');
-			this->ppMap[this->ownHero.getRow() - 1][this->ownHero.getColumn()]->setSymbol('@');
+			this->ppMap[curX][curY]->setSymbol(char(int('2') + 128));
+			this->ppMap[newX][newY]->setSymbol((char)148);
 
-			this->ownHero.setRow(this->ownHero.getRow() - 1);
+			this->ownHero.setRow(newX);
+			this->ownHero.setColumn(newY);
 			system("cls");
 			printMap();
 			cout << "You get " << MonstersOnMap.getExperience() << "xp." << endl;
 		}
 		break;
-	case '&':
+	case 'm':
+		//save game
 		system("cls");
 		printMap();
 		cout << "Your game was saved! :)" << endl;
 		break;
-	case '$':
+	case 'p':
 		this->ownHero.addItemInBag(getItemOnMap());
-		this->ppMap[this->ownHero.getRow()][this->ownHero.getColumn()]->setSymbol('/');
-		this->ppMap[this->ownHero.getRow() - 1][this->ownHero.getColumn()]->setSymbol('@');
-		
-		this->ownHero.setRow(this->ownHero.getRow() - 1);
+		this->ppMap[curX][curY]->setSymbol(char(int('2') + 128));
+		this->ppMap[newX][newY]->setSymbol((char)148);
+
+		this->ownHero.setRow(newX);
+		this->ownHero.setColumn(newY);
 		system("cls");
 		printMap();
 		cout << "You get new item!" << getItemOnMap() << endl;
 		break;
-	case '!':
+	case ']':
 		this->Level++;
 		PlayMap(getLevel());
 		system("cls");
@@ -314,181 +329,19 @@ void Map::moveHeroUp()
 //Moving hero down
 void Map::moveHeroDown()
 {
-	switch (this->ppMap[this->ownHero.getRow() + 1][this->ownHero.getColumn()]->getSymbol())
-	{
-	case '#':
-		cout << " Cant move hero there!" << endl;
-		break;
-	case '/':
-		Cell* temp;
-		temp = this->ppMap[this->ownHero.getRow()][this->ownHero.getColumn()]; 
-		this->ppMap[this->ownHero.getRow()][this->ownHero.getColumn()] = this->ppMap[this->ownHero.getRow() + 1][this->ownHero.getColumn()];
-		this->ppMap[this->ownHero.getRow() + 1][this->ownHero.getColumn()] = temp;
-
-		this->ownHero.setRow(this->ownHero.getRow() + 1);
-		system("cls");
-		printMap();
-		break;
-	case '%':
-		system("cls");
-		printMap();
-		this->ownHero.attackMonster(MonstersOnMap);
-		if (this->MonstersOnMap.getLife() == 0)
-		{
-			this->ppMap[this->ownHero.getRow()][this->ownHero.getColumn()]->setSymbol('/');
-			this->ppMap[this->ownHero.getRow() + 1][this->ownHero.getColumn()]->setSymbol('@');
-
-			this->ownHero.setRow(this->ownHero.getRow() + 1);
-			system("cls");
-			printMap();
-			cout << "You get " << MonstersOnMap.getExperience() << "xp." << endl;
-		}
-		break;
-	case '&':
-		//save game
-		system("cls");
-		printMap();
-		cout << "Your game was saved! :)" << endl;
-		break;
-	case '$':
-		this->ownHero.addItemInBag(getItemOnMap());
-		this->ppMap[this->ownHero.getRow()][this->ownHero.getColumn()]->setSymbol('/');
-		this->ppMap[this->ownHero.getRow() + 1][this->ownHero.getColumn()]->setSymbol('@');
-		
-		this->ownHero.setRow(this->ownHero.getRow() + 1);
-		system("cls");
-		printMap();
-		cout << "You get new item!" << getItemOnMap() << endl;
-		break;
-	case '!':
-		this->Level++;
-		PlayMap(getLevel());
-		system("cls");
-		printMap();
-		break;
-	default:
-		break;
-	}
+	moveHero(1, 0);
 }
 
 //Moving hero left
 void Map::moveHeroLeft()
 {
-	switch (this->ppMap[this->ownHero.getRow()][this->ownHero.getColumn() - 1]->getSymbol())
-	{
-	case '#':
-		cout << " Cant move hero there!" << endl;
-		break;
-	case '/':
-		Cell* temp;
-		temp = this->ppMap[this->ownHero.getRow()][this->ownHero.getColumn()]; 
-		this->ppMap[this->ownHero.getRow()][this->ownHero.getColumn()] = this->ppMap[this->ownHero.getRow()][this->ownHero.getColumn() - 1];
-		this->ppMap[this->ownHero.getRow()][this->ownHero.getColumn() - 1] = temp;
-
-		this->ownHero.setColumn(this->ownHero.getColumn() - 1);
-		system("cls");
-		printMap();
-		break;
-	case '%':
-		system("cls");
-		printMap();
-		this->ownHero.attackMonster(MonstersOnMap);
-		if (this->MonstersOnMap.getLife() == 0)
-		{
-			this->ppMap[this->ownHero.getRow()][this->ownHero.getColumn()]->setSymbol('/');
-			this->ppMap[this->ownHero.getRow()][this->ownHero.getColumn() - 1]->setSymbol('@');
-
-			this->ownHero.setColumn(this->ownHero.getColumn() - 1);
-			system("cls");
-			printMap();
-			cout << "You get " << MonstersOnMap.getExperience() << "xp." << endl;
-		}
-		break;
-	case '&':
-		//save game
-		system("cls");
-		printMap();
-		cout << "Your game was saved! :)" << endl;
-		break;
-	case '$':
-		this->ownHero.addItemInBag(getItemOnMap());
-		this->ppMap[this->ownHero.getRow()][this->ownHero.getColumn()]->setSymbol('/');
-		this->ppMap[this->ownHero.getRow()][this->ownHero.getColumn() - 1]->setSymbol('@');
-		
-		this->ownHero.setColumn(this->ownHero.getColumn() - 1);
-		system("cls");
-		printMap();
-		cout << "You get new item!" << getItemOnMap() << endl;
-		break;
-	case '!':
-		this->Level++;
-		PlayMap(getLevel());
-		system("cls");
-		printMap();
-		break;
-	default:
-		break;
-	}
+	moveHero(0, -1);
 }
 
 //Moving hero right
 void Map::moveHeroRight()
 {
-	switch (this->ppMap[this->ownHero.getRow()][this->ownHero.getColumn() + 1]->getSymbol())
-	{
-	case '#':
-		cout << " Cant move hero there!" << endl;
-		break;
-	case '/':
-		Cell* temp;
-		temp = this->ppMap[this->ownHero.getRow()][this->ownHero.getColumn()]; 
-		this->ppMap[this->ownHero.getRow()][this->ownHero.getColumn()] = this->ppMap[this->ownHero.getRow()][this->ownHero.getColumn() + 1];
-		this->ppMap[this->ownHero.getRow()][this->ownHero.getColumn() + 1] = temp;
-
-		this->ownHero.setColumn(this->ownHero.getColumn()+ 1);
-		system("cls");
-		printMap();
-		break;
-	case '%':
-		system("cls");
-		printMap();
-		this->ownHero.attackMonster(MonstersOnMap);
-		if (this->MonstersOnMap.getLife() == 0)
-		{
-			this->ppMap[this->ownHero.getRow()][this->ownHero.getColumn()]->setSymbol('/');
-			this->ppMap[this->ownHero.getRow()][this->ownHero.getColumn() + 1]->setSymbol('@');
-
-			this->ownHero.setColumn(this->ownHero.getColumn() + 1);
-			system("cls");
-			printMap();
-			cout << "You get " << MonstersOnMap.getExperience() << "xp." << endl;
-		}
-		break;
-	case '&':
-		//save game
-		system("cls");
-		printMap();
-		cout << "Your game was saved! :)" << endl;
-		break;
-	case '$':
-		this->ownHero.addItemInBag(getItemOnMap());
-		this->ppMap[this->ownHero.getRow()][this->ownHero.getColumn()]->setSymbol('/');
-		this->ppMap[this->ownHero.getRow()][this->ownHero.getColumn() + 1]->setSymbol('@');
-		
-		this->ownHero.setColumn(this->ownHero.getColumn()+ 1);
-		system("cls");
-		printMap();
-		cout << "You get new item! " << endl;
-		break;
-	case '!':
-		this->Level++;
-		PlayMap(getLevel());
-		system("cls");
-		printMap();
-		break;
-	default:
-		break;
-	}
+	moveHero(0, 1);
 }
 
 
@@ -499,7 +352,7 @@ void Map::findHeroInMap()
 	{
 		for(size_t j = 0; j < this->Rows; j++)
 		{
-			if(this->ppMap[i][j]->getSymbol() == '@')
+			if (this->ppMap[i][j]->getSymbol() == (char)148)
 			{
 				this->ownHero.setRow(i);
 				this->ownHero.setColumn(j);
@@ -516,7 +369,7 @@ void Map::findMonsterInMap()
 	{
 		for(size_t j = 0; j < this->Rows; j++)
 		{
-			if(this->ppMap[i][j]->getSymbol() == '%')
+			if(this->ppMap[i][j]->getSymbol() == 'j')
 			{
 				this->MonstersOnMap.setRow(i);
 				this->MonstersOnMap.setColumn(j);
@@ -534,11 +387,11 @@ void Map::findFirstPosition()
 	{
 		for(size_t j = 0; j < this->Rows; j++)
 		{
-			if(this->ppMap[i][j]->getSymbol() == '/')
+			if(this->ppMap[i][j]->getSymbol() == (char)((int)'2' + 128))
 			{
 				this->ownHero.setRow(i);
 				this->ownHero.setColumn(j);
-				this->ppMap[i][j]->setSymbol('@');
+				this->ppMap[i][j]->setSymbol((char)148);
 				return;
 			}
 		}

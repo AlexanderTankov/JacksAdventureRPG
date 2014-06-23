@@ -32,6 +32,7 @@ public:
 	void		  loadMap(ifstream& fin);
 
 	void		create();
+	void		moveHero(int x, int y);
 	void		moveHeroUp();
 	void		moveHeroDown();
 	void		moveHeroLeft();
