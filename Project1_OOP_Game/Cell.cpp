@@ -42,6 +42,7 @@ Cell::Cell(const Cell& other)
 }
 
 
+//Compares that two cells are equal
 bool Cell::operator == (const Cell& other)
 {
 	if((this->row == other.getRow()) && (this->column == other.getColumn()) && (this->symbol = other.getSymbol()))
@@ -50,11 +51,13 @@ bool Cell::operator == (const Cell& other)
 		return false;
 }
 
+//Compares that two cells are not equal
 bool Cell::operator != (const Cell& other)
 {
 	return !(*this == other);
 }
 
+//Equated two cells
 Cell& Cell::operator = (const Cell& other)
 {
 	if(*this != other)
@@ -120,7 +123,6 @@ Cell Cell::loadCell(ifstream& fin)
 {
 	fin >> this->row;
 	fin >> this->column;
-	fin >> this->symbol; 
 	return *this;
 }
 

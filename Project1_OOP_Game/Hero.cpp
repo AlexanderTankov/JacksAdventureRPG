@@ -6,12 +6,12 @@
 using namespace std;
 
 //Constructor
-Hero::Hero() : BasicFeatures() , Cell('@')
+Hero::Hero() : BasicFeatures() , Cell((char)178)
 {
-	this->Life = 100;
 	this->MaxLife = 100;
-	this->Mana = 100;
+	this->Life = 100;
 	this->MaxMana = 100;
+	this->Mana = 100;
 	this->Experience = 0;
 	this->Level = 0;
 }
@@ -24,10 +24,10 @@ Hero::~Hero()
 //Constructor for copy one hero to other
 Hero::Hero(const Hero& other) : BasicFeatures(other) , Cell(other)
 {
-	this->Life = other.getLife();
 	this->MaxLife = other.getMaxLife();
-	this->Mana = other.getMana();
+	this->Life = other.getLife();
 	this->MaxMana = other.getMaxMana();
+	this->Mana = other.getMana();
 	this->Experience = other.getExperience();
 	this->Level = other.getLevel();
 	this->gear = other.getGear();
@@ -47,6 +47,7 @@ Hero::Hero(const char* Name, size_t Attack, size_t Defense, size_t MaxLife, size
 }
 
 
+//Compares that two heroes are equal
 bool Hero::operator == (const Hero& other)
 {
 	if((Cell::operator==(other)) && (BasicFeatures::operator==(other)) && (this->Life == other.getLife()) && (this->MaxLife == other.getMaxLife()) &&
@@ -57,21 +58,23 @@ bool Hero::operator == (const Hero& other)
 		return false;
 }
 
+//Compares that two heroes are not equal
 bool Hero::operator != (const Hero& other)
 {
 	return !(*this == other);
 }
 
+//Equated two heroes
 Hero& Hero::operator = (const Hero& other)
 {
 	if(*this != other)
 	{
 		BasicFeatures::operator=(other);
 		Cell::operator=(other);
-		this->Life = other.getLife();
 		this->MaxLife = other.getMaxLife();
-		this->Mana = other.getMana();
+		this->Life = other.getLife();
 		this->MaxMana = other.getMaxMana();
+		this->Mana = other.getMana();
 		this->Experience = other.getExperience();
 		this->Level = other.getLevel();
 		this->gear = other.getGear();
@@ -133,7 +136,7 @@ Bag Hero::getOwnBag() const
 //Set life to Hero
 void Hero::setLife(size_t Life)
 {
-	if(Life >= 0)
+	if(Life >= 0 && Life <= MaxLife)
 		this->Life =  Life;
 	else 
 		cout << "Life of hero cant be less than 1" << endl;
@@ -142,8 +145,10 @@ void Hero::setLife(size_t Life)
 //Set maximum life to Hero
 void Hero::setMaxLife(size_t MaxLife)
 {
-	if(MaxLife > 0)
+	if (MaxLife > 0)
+	{
 		this->MaxLife =  MaxLife;
+	}
 	else 
 		cout << "Maximum life of hero cant be less than 1" << endl;
 }
@@ -151,7 +156,7 @@ void Hero::setMaxLife(size_t MaxLife)
 //Set Mana to Hero
 void Hero::setMana(size_t Mana)
 {
-	if(Mana > 0)
+	if(Mana > 0 && Mana <= this->MaxMana)
 		this->Mana = Mana;
 	else 
 		cout << "Mana of hero cant be less than 1" << endl;
@@ -160,8 +165,10 @@ void Hero::setMana(size_t Mana)
 //Set Mana to Hero
 void Hero::setMaxMana(size_t MaxMana)
 {
-	if(MaxMana > 0)
+	if (MaxMana > 0)
+	{
 		this->MaxMana = MaxMana;
+	}
 	else 
 		cout << "Maximum mana of hero cant be less than 1" << endl;
 }
@@ -178,10 +185,10 @@ void Hero::setExperience(size_t Experience)
 //Set Level to Hero
 void Hero::setLevel(size_t Level)
 {
-	if(Level > 0)
+	if(Level >= 0)
 		this->Level = Level;
 	else 
-		cout << "Level cant be less than 1" << endl;
+		cout << "Level cant be less than 0" << endl;
 }
 
 //Set Gear to Hero
@@ -205,16 +212,17 @@ void Hero::setOwnBag(const Bag newOwnBag)
 }
 
 
+//Adding item in bag
 void Hero::addItemInBag(const Item* newItem)
 {
 	this->ownBag.addItemInBag(newItem);
 }
 
+////Add Item to gear from bag
 //void Hero::setItemToGearFromBag(const Item* ItemForGear)
 //{
 //	gear.setOwnHead(ItemForGear);
 //}
-
 
 
 //Defense reduce attack for battle (1 def ~ 2% att)
@@ -302,27 +310,31 @@ void Hero::printHero() const
 	getOwnBag().printBag();
 }
 
+//Save hero in flow
 ostream& Hero::saveHero(ofstream& fout) const
 {
 	saveBasicFeatures(fout);
+	saveCell(fout);
 	fout << getLife() << endl << getMaxLife() << endl << getMana() << endl
 		<< getMaxMana() << endl << getExperience() << endl << getLevel() << endl;
-	this->gear.saveGear(fout);
-	this->ownBag.saveBag(fout);
+	//this->gear.saveGear(fout);
+	//this->ownBag.saveBag(fout);
 	return fout;
 }
 
+//Load hero from flow
 void Hero::loadHero(std::ifstream& fin)
 {
 	loadBasicFeatures(fin);
+	loadCell(fin);
 	size_t hLife, hMaxLife, hExperience, hMana, hMaxMana, hLevel;
 	fin >> hLife >> hMaxLife >> hMana >> hMaxMana >> hExperience >> hLevel;
-	setLife(hLife);
 	setMaxLife(hMaxLife);
-	setMana(hMana);
+	setLife(hLife);
 	setMaxMana(hMaxMana);
+	setMana(hMana);
 	setExperience(hExperience);
 	setLevel(hLevel);
-	this->gear.loadGear(fin);
+	//this->gear.loadGear(fin);
 	//load bag ...
 }

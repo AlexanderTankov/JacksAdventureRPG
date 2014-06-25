@@ -39,7 +39,5 @@ public:
 	std::ostream&		saveItem(std::ofstream& out) const;
 
 private:
-	size_t	Mana;
+	size_t				Mana;
 };
-
-//std::ostream& operator << (std::ostream& out, const Item& other);

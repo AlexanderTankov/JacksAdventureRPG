@@ -47,6 +47,7 @@ Gear::Gear(Head newHead, Shoulders newShoulders, Chest newChest, Gloves newGlove
 }
 
 
+//Compares that two gears are equal
 bool Gear::operator == (const Gear& other)
 {
 	if((this->ownHead == other.getOwnHead()) && (this->ownShoulders == other.getOwnShoulders()) && (this->ownChest == other.getOwnChest()) &&
@@ -58,11 +59,13 @@ bool Gear::operator == (const Gear& other)
 		return false;
 }
 
+//Compares that two gears are not equal
 bool Gear::operator != (const Gear& other)
 {
 	return !(*this == other);
 }
 
+//Equated two gears
 Gear& Gear::operator = (const Gear& other)
 {
 	if(*this != other)
@@ -226,6 +229,7 @@ void Gear::printGear() const
 	getOwnWeapon().printItem();
 }
 
+//Save gear in flow
 ofstream& Gear::saveGear(ofstream& fout) const
 {
 	this->ownHead.saveItem(fout);
@@ -241,6 +245,7 @@ ofstream& Gear::saveGear(ofstream& fout) const
 	return fout;
 }
 
+//Load gear from flow
 void Gear::loadGear(ifstream& fin)
 {
 	this->ownHead.loadItem(fin);
@@ -254,16 +259,3 @@ void Gear::loadGear(ifstream& fin)
 	this->ownShield.loadItem(fin);
 	this->ownWeapon.loadItem(fin);
 }
-
-////operator <<
-//ostream& operator << (ostream& out, const Gear& other)
-//{
-//	out << "Gear:" << endl;
-//	out << other.getOwnHead() << endl << other.getOwnShoulders() << endl;
-//	out << other.getOwnBelt() << endl << other.getOwnPants() << endl;
-//	out << other.getOwnChest() << endl << other.getOwnRing() << endl;
-//	out << other.getOwnGloves() << endl << other.getOwnShield() << endl;
-//	out << other.getOwnBoots() << endl << other.getOwnWeapon() << endl;
-//	return out;
-//}
-

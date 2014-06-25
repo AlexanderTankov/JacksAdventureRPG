@@ -30,5 +30,5 @@ public:
 private:
 	size_t	row;
 	size_t	column;
-	char symbol;
+	char	symbol;
 };

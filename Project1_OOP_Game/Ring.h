@@ -15,5 +15,3 @@ public:
 	virtual void		print() const { Item::printItem(); }
 
 };
-
-//std::ostream& operator << (std::ostream& out, const Ring& other) { other.printInFlow(out); return out; }

@@ -79,6 +79,7 @@
     <ClCompile Include="Bag.cpp" />
     <ClCompile Include="BasicFeatures.cpp" />
     <ClCompile Include="Cell.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="Gear.cpp" />
     <ClCompile Include="Hero.cpp" />
     <ClCompile Include="Item.cpp" />

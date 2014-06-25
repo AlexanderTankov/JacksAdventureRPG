@@ -10,23 +10,23 @@ public:
 	Monster(const Monster& other);
 	Monster(const char* Name, size_t Attack, size_t Defense, size_t MaxLife, size_t Experience, size_t Row, size_t Column);
 
-	size_t	getLife() const;
-	size_t	getMaxLife() const;
-	size_t	getExperience() const;
+	size_t			getLife() const;
+	size_t			getMaxLife() const;
+	size_t			getExperience() const;
 	
-	void	setLife(size_t Life);
-	void	setMaxLife(size_t MaxLife);
-	void	setExperience(size_t Experience);
+	void			setLife(size_t Life);
+	void			setMaxLife(size_t MaxLife);
+	void			setExperience(size_t Experience);
 
-	std::ostream& saveMonster(std::ofstream& fout) const;
-	void		  loadMonster(std::ifstream& fin);
+	std::ostream&	saveMonster(std::ofstream& fout) const;
+	void			loadMonster(std::ifstream& fin);
 
-	void	removeHealth(size_t Attack);
-	size_t	reduceAttack(size_t Defense);
-	void	printMonster() const;
+	void			removeHealth(size_t Attack);
+	size_t			reduceAttack(size_t Defense);
+	void			printMonster() const;
 
 private:
-	size_t	Life;
-	size_t	MaxLife;
-	size_t	Experience;
+	size_t			Life;
+	size_t			MaxLife;
+	size_t			Experience;
 };

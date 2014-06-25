@@ -30,7 +30,7 @@ Item::Item(const char* Name, size_t Attack, size_t Defense, size_t Mana)
 }
 
 
-//operator =
+//Compares that two items are equal
 Item& Item::operator= (const Item& other)
 {
 	if(*this != other)
@@ -43,7 +43,7 @@ Item& Item::operator= (const Item& other)
 	return *this;
 }
 
-//operator ==
+//Compares that two items are not equal
 bool Item::operator== (const Item& other)
 {
 	if(!strcmp(getName(), other.getName()) && getAttack() == other.getAttack() && getDefense() == other.getDefense()
@@ -53,7 +53,7 @@ bool Item::operator== (const Item& other)
 		return false;
 }
 
-//operator !=
+//Equated two items
 bool Item::operator!= (const Item& other)
 {
 	return !(*this == other);
@@ -83,6 +83,7 @@ void Item::printItem() const
 	cout << getName() << '/' << getAttack() << '/' << getDefense() << '/' << getMana() << " (Name/Attack/Defense/Mana) " << endl;;
 }
 
+//Load item from flow
 void Item::loadItem(ifstream& fin)
 {
 	loadBasicFeatures(fin);
@@ -91,18 +92,12 @@ void Item::loadItem(ifstream& fin)
 	setMana(iMana);
 }
 
-//Print item in flow
+//Save item in flow
 ostream& Item::saveItem(ofstream& out) const
 {
 	saveBasicFeatures(out);
-	out << getMana() << endl;
+	out << getMana();
 	return out;
 }
 
-////operator <<
-//ostream& operator << (ofstream& out, const Item& other)
-//{
-//	other.saveItem(out);
-//	return out;
-//}
 

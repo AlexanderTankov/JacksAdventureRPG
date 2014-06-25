@@ -5,27 +5,20 @@
 using namespace std;
 
 //Constructor
-//Map::Map()
-//{
-//	this->Rows = 1;
-//	this->Columns = 1;
-//	this->Level = 1;
-//	create();
-//	this->ItemOnMap = new Head;
-//}
-
-Map::Map()//size_t LevelOfMap)
+Map::Map()
 {
 	this->ItemOnMap = new Head;
-	PlayMap(1);//LevelOfMap);
+	PlayMap(1);
 	char heroName[100];
 	cout << "Enter name of your hero: " << endl;
-	cin >> heroName;
+	cin.getline(heroName,100, '\n');
 	this->ownHero.setName(heroName);
 	this->ownHero.setAttack(25);
 	this->ownHero.setDefense(5);
 	this->ownHero.setMaxLife(100);
+	this->ownHero.setLife(100);
 	this->ownHero.setMaxMana(50);
+	this->ownHero.setMana(50);
 }
 
 //Constructor for copy one Map to other
@@ -50,32 +43,6 @@ Map::Map(const Map& other)
 	this->MonstersOnMap = other.getMonstersOnMap();
 	this->ItemOnMap = other.getItemOnMap();
 }
-
-////Constructor for easy creating a Map
-//Map::Map(size_t rows, size_t columns, size_t level,  const Cell*** ppmap, Hero ownHero)
-//{
-//	if(rows > 0 && columns > 0)
-//	{
-//		this->Rows = rows;
-//		this->Columns = columns;
-//		this->Level = level;
-//		this->ppMap = new Cell** [columns];
-//		for (size_t i = 0; i < columns; i++)
-//		{
-//			this->ppMap[i] = new Cell* [rows];
-//			for (size_t j = 0; j < rows; j++)
-//				this->ppMap[i][j] = new Cell;
-//		}
-//
-//		for (size_t i = 0; i < columns; i++)
-//			for(size_t j = 0; j < rows; j++)
-//				this->ppMap[i][j] = getPpmap()[i][j];
-//
-//		this->ownHero = ownHero;
-//	}
-//	else
-//		cout << "Rows and columns cant be less than 1!" << endl;
-//}
 
 //Destructor
 Map::~Map()
@@ -190,6 +157,7 @@ void Map::setItem(Item* newItem)
 }
 
 
+//Save map without hero
 ostream& Map::saveMap(ofstream& fout) const
 {
 	fout << getRows() << endl;
@@ -199,14 +167,28 @@ ostream& Map::saveMap(ofstream& fout) const
 	{
 		for (size_t j = 0; j < this->Rows; j++)
 		{
-				fout << this->ppMap[i][j]->getSymbol();
+			fout << ((char)((int)this->ppMap[i][j]->getSymbol() + 128));
 		}
-		fout << endl;
+		if (i != this->Columns - 1)
+			fout << endl;
 	}
 
-	MonstersOnMap.saveMonster(fout);
-	ItemOnMap->saveItem(fout);
+	this->MonstersOnMap.saveMonster(fout);
+	this->ItemOnMap->saveItem(fout);
 	return fout;
+}
+
+//Save map with hero
+void Map::SaveWithHero()
+{
+	ofstream Save("Load.txt");
+	if (!Save)
+	{
+		cout << "The file is not open";
+		//da hvurlq excep
+	}
+	saveMap(Save);
+	this->ownHero.saveHero(Save);
 }
 
 //Load map from flow
@@ -238,6 +220,33 @@ void Map::loadMap(ifstream& fin)
 	this->ItemOnMap->loadItem(fin);
 }
 
+//Load and prepare any map to be ready to play 
+void Map::PlayMap(size_t LevelOfMap)
+{
+	this->Level = LevelOfMap;
+	char MomentMap[10] = "Map00.txt";
+	if (LevelOfMap < 10)
+	{
+		(char)MomentMap[4] = (char)(LevelOfMap + 48);
+	}
+	else
+	{
+		(char)MomentMap[4] = (char)((LevelOfMap % 10) + 48);
+		(char)MomentMap[3] = (char)((LevelOfMap / 10 % 10) + 48);
+	}
+	ifstream din(MomentMap, ios::out);
+	if (!din)
+	{
+		cout << "The file is not open";
+		return;
+	}
+	setHero(getOwnHero());
+	setItem(getItemOnMap());
+	loadMap(din);
+	findHeroInMap();
+	findMonsterInMap();
+}
+
 
 //Memory allocation
 void Map::create()
@@ -252,14 +261,7 @@ void Map::create()
 
 }
 
-//Moving hero up
-void Map::moveHeroUp()
-{
-	moveHero(-1, 0);
-	
-}
-
-//Moving hero down
+//Moving hero
 void Map::moveHero(int x, int y)
 {
 	int curX = this->ownHero.getRow();
@@ -289,7 +291,7 @@ void Map::moveHero(int x, int y)
 		if (this->MonstersOnMap.getLife() == 0)
 		{
 			this->ppMap[curX][curY]->setSymbol(char(int('2') + 128));
-			this->ppMap[newX][newY]->setSymbol((char)148);
+			this->ppMap[newX][newY]->setSymbol((char)173);
 
 			this->ownHero.setRow(newX);
 			this->ownHero.setColumn(newY);
@@ -299,7 +301,7 @@ void Map::moveHero(int x, int y)
 		}
 		break;
 	case 'm':
-		//save game
+		SaveWithHero();
 		system("cls");
 		printMap();
 		cout << "Your game was saved! :)" << endl;
@@ -307,7 +309,7 @@ void Map::moveHero(int x, int y)
 	case 'p':
 		this->ownHero.addItemInBag(getItemOnMap());
 		this->ppMap[curX][curY]->setSymbol(char(int('2') + 128));
-		this->ppMap[newX][newY]->setSymbol((char)148);
+		this->ppMap[newX][newY]->setSymbol((char)173);
 
 		this->ownHero.setRow(newX);
 		this->ownHero.setColumn(newY);
@@ -324,6 +326,12 @@ void Map::moveHero(int x, int y)
 	default:
 		break;
 	}
+}
+
+//Moving hero up
+void Map::moveHeroUp()
+{
+	moveHero(-1, 0);
 }
 
 //Moving hero down
@@ -352,7 +360,7 @@ void Map::findHeroInMap()
 	{
 		for(size_t j = 0; j < this->Rows; j++)
 		{
-			if (this->ppMap[i][j]->getSymbol() == (char)148)
+			if (this->ppMap[i][j]->getSymbol() == (char)173)
 			{
 				this->ownHero.setRow(i);
 				this->ownHero.setColumn(j);
@@ -410,31 +418,4 @@ void Map::printMap() const
 		cout << endl;
 	}
 	this->ownHero.printHero();
-}
-
-
-void Map::PlayMap(size_t LevelOfMap)
-{
-	this->Level = LevelOfMap;
-	char MomentMap[10] = "Map00.txt";
-	if (LevelOfMap < 10)
-	{
-		(char)MomentMap[4] = (char)(LevelOfMap + 48);
-	}
-	else
-	{	
-		(char)MomentMap[4] = (char)((LevelOfMap % 10) + 48);
-		(char)MomentMap[3] = (char)((LevelOfMap / 10 % 10) + 48);
-	}
-	ifstream din(MomentMap, ios::out);
-	if (!din)
-	{
-		cout << "The file is not open";
-		return;
-	}
-	setHero(getOwnHero());
-	setItem(getItemOnMap());
-	loadMap(din);
-	findFirstPosition();
-	findMonsterInMap();
 }

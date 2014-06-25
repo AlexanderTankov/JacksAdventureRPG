@@ -28,7 +28,7 @@ public:
 	std::ostream&	saveBasicFeatures(std::ofstream& out) const;
 
 private:
-	char*	Name;
-	size_t	Attack;
-	size_t	Defense;
+	char*			Name;
+	size_t			Attack;
+	size_t			Defense;
 };

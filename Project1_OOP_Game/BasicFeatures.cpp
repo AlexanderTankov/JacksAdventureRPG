@@ -51,7 +51,7 @@ bool BasicFeatures::operator != (const BasicFeatures& other)
 	return !(*this == other);
 }
 
-//Åquales two BasicFeatures
+//Equales two BasicFeatures
 BasicFeatures& BasicFeatures::operator = (const BasicFeatures& other)
 {
 	if(*this != other)
@@ -147,6 +147,7 @@ void BasicFeatures::printBasicFeatures() const
 	cout << "Defense: " << getDefense() << endl;
 }
 
+//Load in flow
 void BasicFeatures::loadBasicFeatures(ifstream& fin)
 {
 	char tempName[100];
@@ -158,7 +159,7 @@ void BasicFeatures::loadBasicFeatures(ifstream& fin)
 	setDefense(tempDefense);
 }
 
-//Print in flow
+//Save in flow
 ostream& BasicFeatures::saveBasicFeatures(ofstream& out) const
 {
 	out << getName() << endl;

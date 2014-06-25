@@ -35,6 +35,8 @@ Bag::Bag(const Bag& other)
 	copyBag(other);
 }
 
+
+//Compares that two bags are equal(compare items in deck)
 bool Bag::operator == (const Bag& other)
 {
 	if((this->capacity == other.getCapacity()) && (this->filledCells == other.getFilledCells()) && 
@@ -44,6 +46,7 @@ bool Bag::operator == (const Bag& other)
 		return false;
 }
 
+//Compares that two bags are not equal
 bool Bag::operator != (const Bag& other)
 {
 	return !(*this == other);
@@ -60,6 +63,7 @@ Bag& Bag::operator = (const Bag& other)
 	return *this;
 }
 
+//This operator eturn item with this index in bag
 Item* Bag::operator [] (const size_t idx)
 {
 	return this->contentOfBag[idx];
@@ -86,6 +90,7 @@ Item** Bag::getContentOfBag() const
 }
 
 
+//Set number of filled cells
 void Bag::setFilledCells(const size_t newNumOfFilledCells)
 {
 	if(newNumOfFilledCells > 0)
@@ -94,6 +99,7 @@ void Bag::setFilledCells(const size_t newNumOfFilledCells)
 		cout << "Filled Cells in bag cant be less than 1!" << endl;
 }
 
+//Add item in bag
 void Bag::addItemInBag(const Item* newItem)
 {
 	if (getFilledCells() == getCapacity())
@@ -105,6 +111,7 @@ void Bag::addItemInBag(const Item* newItem)
 }
 
 
+//Resize bag with new capacity
 void Bag::resizeBag(size_t newCapacity)
 {
 	if(newCapacity < this->filledCells)
@@ -127,7 +134,7 @@ void Bag::resizeBag(size_t newCapacity)
 	}
 }
 
-//Copying data
+//Copying data from bag
 void Bag::copyBag(const Bag& other)
 {
 	this->capacity = other.getCapacity();
@@ -153,6 +160,7 @@ bool Bag::isValid() const
 		return false;
 }
 
+//Print bag
 void Bag::printBag() const
 {
 	cout << "Bag:" << endl;
@@ -163,6 +171,7 @@ void Bag::printBag() const
 	}
 }
 
+//Save bag in flow
 ofstream& Bag::saveBag(ofstream& fout) const
 {
 	if (isValid())
@@ -173,6 +182,7 @@ ofstream& Bag::saveBag(ofstream& fout) const
 	return fout;
 }
 
+//Load bag from flow
 void loadBag(ifstream& fin)
 {
 	//ako ima neshto da loadva da go loadne
