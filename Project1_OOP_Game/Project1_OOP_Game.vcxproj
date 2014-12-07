@@ -90,22 +90,17 @@
   <ItemGroup>
     <ClInclude Include="Bag.h" />
     <ClInclude Include="BasicFeatures.h" />
-    <ClInclude Include="Belt.h" />
     <ClInclude Include="Boots.h" />
     <ClInclude Include="Cell.h" />
-    <ClInclude Include="Chest.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Gear.h" />
-    <ClInclude Include="Gloves.h" />
     <ClInclude Include="Head.h" />
     <ClInclude Include="Hero.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Monster.h" />
-    <ClInclude Include="Pants.h" />
     <ClInclude Include="Ring.h" />
     <ClInclude Include="Shield.h" />
-    <ClInclude Include="Shoulders.h" />
     <ClInclude Include="Weapon.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

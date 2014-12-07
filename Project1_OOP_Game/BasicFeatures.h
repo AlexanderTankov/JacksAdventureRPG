@@ -22,10 +22,12 @@ public:
 
 	void			clear();
 	void			copy(const BasicFeatures& other);
+	BasicFeatures&	ReturnNullBF();
 
 	void			printBasicFeatures() const;
 	void			loadBasicFeatures(std::ifstream& fin);
 	std::ostream&	saveBasicFeatures(std::ofstream& out) const;
+	bool			BFIsValid() const;
 
 private:
 	char*			Name;

@@ -70,17 +70,41 @@ size_t Item::getMana() const
 //Set Bonus to Item
 void Item::setMana(size_t Mana)
 {
-	if(Mana > 0)
+	if(Mana >= 0)
 		this->Mana = Mana;
 	else
-		cout << "Mana cant be less than 1" << endl;
+		cout << "Mana cant be less than 0" << endl;
 }
 
 
 //Print item
 void Item::printItem() const
 {
-	cout << getName() << '/' << getAttack() << '/' << getDefense() << '/' << getMana() << " (Name/Attack/Defense/Mana) " << endl;;
+	switch (getTypeOfItem())
+	{
+	case BOOTS:
+		cout << "Boots:" << endl;
+		break;
+	case HEAD:
+		cout << "Head:" << endl;
+		break;
+	case RING:
+		cout << "Ring:" << endl;
+		break;
+	case SHIELD:
+		cout << "Shield:" << endl;
+		break;
+	case WEAPON:
+		cout << "Weapon:" << endl;
+		break;
+	default:
+		cout << "This is some strange of item!" << endl;
+		break;
+	}
+	cout << "Name of Item: " << getName() << endl;
+	cout << "Bonus attack: " << getAttack() << endl;
+	cout << "Bonus defense: " << getDefense() << endl;
+	cout << "Bonus mana: " << getMana() << endl;
 }
 
 //Load item from flow
@@ -100,4 +124,14 @@ ostream& Item::saveItem(ofstream& out) const
 	return out;
 }
 
+Item& Item::returnNUllItem()
+{
+	ReturnNullBF();
+	this->Mana = 0;
+	return *this;
+}
 
+bool Item::ItemIsValid() const
+{
+	return BFIsValid();
+}

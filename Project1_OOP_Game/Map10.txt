@@ -14,7 +14,8 @@
 2
 300
 300
-50iNinjata
+50
+1iNinjata
 10
 10
 10

@@ -7,41 +7,19 @@ using namespace std;
 //Constructor
 Map::Map()
 {
+	this->ownHero = new Hero();
 	this->ItemOnMap = new Head;
 	PlayMap(1);
 	char heroName[100];
 	cout << "Enter name of your hero: " << endl;
 	cin.getline(heroName,100, '\n');
-	this->ownHero.setName(heroName);
-	this->ownHero.setAttack(25);
-	this->ownHero.setDefense(5);
-	this->ownHero.setMaxLife(100);
-	this->ownHero.setLife(100);
-	this->ownHero.setMaxMana(50);
-	this->ownHero.setMana(50);
-}
-
-//Constructor for copy one Map to other
-Map::Map(const Map& other)
-{
-	this->Rows = other.getRows();
-	this->Columns = other.getColumns();
-	this->Level = other.getLevel();
-	this->ppMap = new Cell** [other.getColumns()];
-	for (size_t i = 0; i < other.getColumns(); i++)
-	{
-		this->ppMap[i] = new Cell* [other.getRows()];
-		for (size_t j = 0; j < other.getRows(); j++)
-			this->ppMap[i][j] = new Cell;
-	}
-
-	for (size_t i = 0; i < other.getColumns(); i++)
-		for(size_t j = 0; j < other.getRows(); j++)
-			this->ppMap[i][j] = other.ppMap[i][j];
-
-	this->ownHero = other.getOwnHero();
-	this->MonstersOnMap = other.getMonstersOnMap();
-	this->ItemOnMap = other.getItemOnMap();
+	this->ownHero->setName(heroName);
+	this->ownHero->setAttack(25);
+	this->ownHero->setDefense(5);
+	this->ownHero->setMaxLife(100);
+	this->ownHero->setLife(100);
+	this->ownHero->setMaxMana(50);
+	this->ownHero->setMana(50);
 }
 
 //Destructor
@@ -60,6 +38,9 @@ Map::~Map()
 
 	delete [] this->ppMap;
 	this->ppMap = NULL;
+
+	delete this->ownHero;
+	this->ownHero = NULL;
 
 	delete this->ItemOnMap;
 	this->ItemOnMap = NULL;
@@ -92,7 +73,7 @@ Cell*** Map::getPpmap() const
 }
 
 //Get map Hero
-Hero Map::getOwnHero() const
+Hero* Map::getOwnHero() const
 {
 	return this->ownHero;
 }
@@ -139,9 +120,12 @@ void Map::setLevel(size_t Level)
 }
 
 //Set hero to map
-void Map::setHero(Hero ownHero)
+void Map::setHero(Hero* ownHero)
 {
-	this->ownHero = ownHero;
+	if (ownHero != NULL)
+		this->ownHero = ownHero;
+	else
+		cout << "This hero is NULL and cant set it!" << endl;
 }
 
 //Set monster to map
@@ -151,14 +135,14 @@ void Map::setMonster(Monster newMonster)
 }
 
 //Set item to map
-void Map::setItem(Item* newItem)
+void Map::setItem(const Item& newItem)
 {
-	this->ItemOnMap = newItem;
+	this->ItemOnMap = newItem.Clone();
 }
 
 
 //Save map without hero
-ostream& Map::saveMap(ofstream& fout) const
+ofstream& Map::saveMap(ofstream& fout) const
 {
 	fout << getRows() << endl;
 	fout << getColumns() << endl;
@@ -174,6 +158,7 @@ ostream& Map::saveMap(ofstream& fout) const
 	}
 
 	this->MonstersOnMap.saveMonster(fout);
+	fout << int(this->ItemOnMap->getTypeOfItem());
 	this->ItemOnMap->saveItem(fout);
 	return fout;
 }
@@ -185,10 +170,10 @@ void Map::SaveWithHero()
 	if (!Save)
 	{
 		cout << "The file is not open";
-		//da hvurlq excep
 	}
+	Save << getLevel() << endl;
 	saveMap(Save);
-	this->ownHero.saveHero(Save);
+	this->ownHero->saveHero(Save);
 }
 
 //Load map from flow
@@ -197,15 +182,28 @@ void Map::loadMap(ifstream& fin)
 	fin >> this->Rows;
 	fin >> this->Columns;
 	create();
+	char** temp;
+	try
+	{
+		temp = new char* [this->Rows];
+		for (size_t p = 0; p < this->Columns; p++)
+		{
+			temp[p] = new char [this->Rows];
+		}
+	}
+	catch (bad_alloc)
+	{
+		cout << "No enough memory!" << endl;
+	}
 
-	char** temp = new char* [this->Rows];
 	for (size_t p = 0; p < this->Columns; p++)
-		temp[p] = new char [this->Rows];
-
-	for (size_t p = 0; p < this->Columns; p++)
-		for(size_t k=0; k< this->Rows; k++)
+	{
+		for (size_t k = 0; k < this->Rows; k++)
+		{
 			fin >> temp[p][k];
-	
+		}
+	}
+
 	for (size_t i = 0; i < this->Columns; i++)
 	{
 		for (size_t j = 0; j < this->Rows; j++)
@@ -216,8 +214,42 @@ void Map::loadMap(ifstream& fin)
 		}
 	}
 
+	for (size_t p = 0; p < this->Columns; p++)
+	{
+		delete temp[p];
+		temp[p] = NULL;
+	}
+	delete[] temp;
+	temp = NULL;
+
 	this->MonstersOnMap.loadMonster(fin);
-	this->ItemOnMap->loadItem(fin);
+	int typeOfItem = -1;
+	Item* tempItem = NULL;
+	fin >> typeOfItem;
+	switch (TypeOfItems(typeOfItem))
+	{
+	case BOOTS:
+		tempItem = new Boots();
+		break;
+	case HEAD:
+		tempItem = new Head();
+		break;
+	case RING:
+		tempItem = new Ring();
+		break;
+	case SHIELD:
+		tempItem = new Shield();
+		break;
+	case WEAPON:
+		tempItem = new Weapon();
+		break;
+	default:
+		cout << "This is some strange of item that i suggest you place in a special place!" << endl;
+		return;
+	}
+	tempItem->loadItem(fin);
+	delete ItemOnMap;
+	this->ItemOnMap = tempItem;
 }
 
 //Load and prepare any map to be ready to play 
@@ -237,11 +269,9 @@ void Map::PlayMap(size_t LevelOfMap)
 	ifstream din(MomentMap, ios::out);
 	if (!din)
 	{
-		cout << "The file is not open";
+		cout << "The file is not open" << endl;
 		return;
 	}
-	setHero(getOwnHero());
-	setItem(getItemOnMap());
 	loadMap(din);
 	findHeroInMap();
 	findMonsterInMap();
@@ -251,21 +281,27 @@ void Map::PlayMap(size_t LevelOfMap)
 //Memory allocation
 void Map::create()
 {
-	this->ppMap = new Cell** [this->Columns];
-	for (size_t i = 0; i < this->Columns; i++)
+	try
 	{
-		this->ppMap[i] = new Cell* [this->Rows];
-		for (size_t j = 0; j < this->Rows; j++)
-			this->ppMap[i][j] = new Cell;
+		this->ppMap = new Cell** [this->Columns];
+		for (size_t i = 0; i < this->Columns; i++)
+		{
+			this->ppMap[i] = new Cell* [this->Rows];
+			for (size_t j = 0; j < this->Rows; j++)
+				this->ppMap[i][j] = new Cell;
+		}
 	}
-
+	catch (bad_alloc)
+	{
+		cout << "No enough memory!" << endl;
+	}
 }
 
 //Moving hero
 void Map::moveHero(int x, int y)
 {
-	int curX = this->ownHero.getRow();
-	int curY = this->ownHero.getColumn();
+	int curX = this->ownHero->getRow();
+	int curY = this->ownHero->getColumn();
 	int newX = curX + x;
 	int newY = curY + y;
 	switch ((char)((int)(this->ppMap[newX][newY]->getSymbol()) - 128))
@@ -279,22 +315,24 @@ void Map::moveHero(int x, int y)
 		this->ppMap[curX][curY] = this->ppMap[newX][newY];
 		this->ppMap[newX][newY] = temp;
 
-		this->ownHero.setRow(newX);
-		this->ownHero.setColumn(newY);
+		this->ownHero->setRow(newX);
+		this->ownHero->setColumn(newY);
 		system("cls");
 		printMap();
 		break;
 	case 'j':
+		if (this->MonstersOnMap.getLife() != 0)
+		{
 		system("cls");
-		printMap();
-		this->ownHero.attackMonster(MonstersOnMap);
-		if (this->MonstersOnMap.getLife() == 0)
+		this->ownHero->attackMonster(MonstersOnMap);
+		}
+		else
 		{
 			this->ppMap[curX][curY]->setSymbol(char(int('2') + 128));
 			this->ppMap[newX][newY]->setSymbol((char)173);
 
-			this->ownHero.setRow(newX);
-			this->ownHero.setColumn(newY);
+			this->ownHero->setRow(newX);
+			this->ownHero->setColumn(newY);
 			system("cls");
 			printMap();
 			cout << "You get " << MonstersOnMap.getExperience() << "xp." << endl;
@@ -307,15 +345,15 @@ void Map::moveHero(int x, int y)
 		cout << "Your game was saved! :)" << endl;
 		break;
 	case 'p':
-		this->ownHero.addItemInBag(getItemOnMap());
+		this->ownHero->addItemInBag(getItemOnMap());
 		this->ppMap[curX][curY]->setSymbol(char(int('2') + 128));
 		this->ppMap[newX][newY]->setSymbol((char)173);
 
-		this->ownHero.setRow(newX);
-		this->ownHero.setColumn(newY);
+		this->ownHero->setRow(newX);
+		this->ownHero->setColumn(newY);
 		system("cls");
 		printMap();
-		cout << "You get new item!" << getItemOnMap() << endl;
+		cout << "You get new item! You can open your bag with 'b' key!" << endl;
 		break;
 	case ']':
 		this->Level++;
@@ -362,8 +400,8 @@ void Map::findHeroInMap()
 		{
 			if (this->ppMap[i][j]->getSymbol() == (char)173)
 			{
-				this->ownHero.setRow(i);
-				this->ownHero.setColumn(j);
+				this->ownHero->setRow(i);
+				this->ownHero->setColumn(j);
 				return;
 			}
 		}
@@ -397,8 +435,8 @@ void Map::findFirstPosition()
 		{
 			if(this->ppMap[i][j]->getSymbol() == (char)((int)'2' + 128))
 			{
-				this->ownHero.setRow(i);
-				this->ownHero.setColumn(j);
+				this->ownHero->setRow(i);
+				this->ownHero->setColumn(j);
 				this->ppMap[i][j]->setSymbol((char)148);
 				return;
 			}
@@ -410,12 +448,13 @@ void Map::findFirstPosition()
 //Print map
 void Map::printMap() const
 {
-	//cout << "==================== New Map ===========================" << endl;
 	for (size_t i = 0; i < this->Columns; i++)
 	{
 		for(size_t j = 0; j < this->Rows; j++)
 			this->ppMap[i][j]->printCell();
 		cout << endl;
 	}
-	this->ownHero.printHero();
+	cout << "Life: " << this->ownHero->getLife() << "/" << this->ownHero->getMaxLife() << endl;
+	cout << "Mana: " << this->ownHero->getMana() << "/" << this->ownHero->getMaxMana() << endl;
+	cout << "Level(Experiance): " << this->ownHero->getLevel() << "(" << this->ownHero->getExperience() << ")" << endl;
 }

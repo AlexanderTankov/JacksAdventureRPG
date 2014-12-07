@@ -1,14 +1,10 @@
 #include <iostream>
+#include <fstream>
 #include "Bag.h"
-#include "Belt.h"
 #include "Boots.h"
-#include "Chest.h"
-#include "Gloves.h"
 #include "Head.h"
-#include "Pants.h"
 #include "Ring.h"
 #include "Shield.h"
-#include "Shoulders.h"
 #include "Weapon.h"
 
 using namespace std;
@@ -93,10 +89,10 @@ Item** Bag::getContentOfBag() const
 //Set number of filled cells
 void Bag::setFilledCells(const size_t newNumOfFilledCells)
 {
-	if(newNumOfFilledCells > 0)
+	if(newNumOfFilledCells >= 0)
 		this->filledCells = newNumOfFilledCells;
 	else
-		cout << "Filled Cells in bag cant be less than 1!" << endl;
+		cout << "Filled Cells in bag cant be less than 0!" << endl;
 }
 
 //Add item in bag
@@ -121,16 +117,31 @@ void Bag::resizeBag(size_t newCapacity)
 		clear();
 	else
 	{
-		Item** pItems = new Item*[newCapacity];
-		if(pItems)
+		Item** pItems;
+		try
 		{
-			for (size_t i = 0; i < this->filledCells ; i++)
-				pItems[i] = this->contentOfBag[i];
-			delete [] this->contentOfBag;
-			this->contentOfBag = new Item*[newCapacity];
-			this->contentOfBag = pItems;
-			this->capacity = newCapacity;
+			pItems = new Item*[newCapacity];
 		}
+		catch (bad_alloc)
+		{
+			cout << "Not enough memory!" << endl;
+		}
+
+		for (size_t i = 0; i < this->filledCells ; i++)
+			pItems[i] = this->contentOfBag[i];
+		delete [] this->contentOfBag;
+		try
+		{
+			this->contentOfBag = new Item*[newCapacity];
+		}
+		catch (bad_alloc)
+		{
+			cout << "Not enough memory!" << endl;
+		}
+		this->contentOfBag = pItems;
+		delete[] pItems;
+		pItems = NULL;
+		this->capacity = newCapacity;
 	}
 }
 
@@ -139,7 +150,14 @@ void Bag::copyBag(const Bag& other)
 {
 	this->capacity = other.getCapacity();
 	this->filledCells = other.getFilledCells();
-	this->contentOfBag = new Item*[this->capacity];
+	try
+	{
+		this->contentOfBag = new Item*[this->capacity];
+	}
+	catch (bad_alloc)
+	{
+		cout << "No enough memory!" << endl;
+	}
 	for (size_t i = 0; i < this->filledCells; i++)
 		this->contentOfBag[i] = other.getContentOfBag()[i];
 }
@@ -167,23 +185,72 @@ void Bag::printBag() const
 	for (size_t i = 0; i < this->filledCells; i++)
 	{
 		this->contentOfBag[i]->printItem();
-		cout << endl;
 	}
 }
 
 //Save bag in flow
 ofstream& Bag::saveBag(ofstream& fout) const
 {
+	fout << getFilledCells() << endl;
 	if (isValid())
 	{
 		for (size_t i = 0; i < getFilledCells(); i++)
+		{
+			fout << int(this->contentOfBag[i]->getTypeOfItem());
 			this->contentOfBag[i]->saveItem(fout);
+			fout << endl;
+		}
 	}
 	return fout;
 }
 
 //Load bag from flow
-void loadBag(ifstream& fin)
+void Bag::loadBag(ifstream& fin)
 {
-	//ako ima neshto da loadva da go loadne
+	size_t filledCellsCount;
+	int typeOfItem = -1;
+	Item* temp = NULL;
+
+	fin >> filledCellsCount;
+	for (size_t i = 0; i < filledCellsCount; i++)
+	{
+		fin >> typeOfItem;
+		switch (TypeOfItems(typeOfItem))
+		{
+
+		case BOOTS:
+			temp = new Boots();
+			break;
+		case HEAD:
+			temp = new Head();
+			break;
+		case RING:
+			temp = new Ring();
+			break;
+		case SHIELD:
+			temp = new Shield();
+			break;
+		case WEAPON:
+			temp = new Weapon();
+			break;
+		default:
+			cout << "This is some strange of item that i suggest you place in a special place!" << endl;
+			break;
+		}
+		temp->loadItem(fin);
+		addItemInBag(temp);
+		typeOfItem = -1;
+		temp = NULL;
+	}
+}
+
+Item* Bag::pullOutItem(size_t pos)
+{
+	Item* temp;
+	temp = this->contentOfBag[pos]->Clone();
+	for (size_t i = pos; i < getFilledCells() - 1; i++)
+		this->contentOfBag[pos] = this->contentOfBag[pos + 1];
+	this->contentOfBag[getFilledCells() - 1] = NULL;
+	setFilledCells(getFilledCells() - 1);
+	return temp;
 }

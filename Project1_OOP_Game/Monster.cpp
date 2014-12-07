@@ -90,7 +90,7 @@ ostream& Monster::saveMonster(ofstream& fout) const
 	saveBasicFeatures(fout);
 	fout << getLife() << endl;
 	fout << getMaxLife() << endl;
-	fout << getExperience();
+	fout << getExperience()<<endl;
 	return fout;
 }
 
@@ -126,7 +126,6 @@ size_t Monster::reduceAttack(size_t Defense)
 //Print Monster
 void Monster::printMonster() const
 {
-	cout << "==================== New Monster ===========================" << endl;
 	BasicFeatures::printBasicFeatures();
 	cout << "Life: " << getLife() << "/" << getMaxLife() << endl;
 	cout << "Experiance: " << getExperience() << endl; 

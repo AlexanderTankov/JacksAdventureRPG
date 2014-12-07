@@ -10,8 +10,9 @@ public:
 	Shield(const Item* other)  : Item(*other) {}
 	Shield(const char* Name, size_t Attack, size_t Defense, size_t Mana) : Item(Name, Attack, Defense, Mana) {}
 
-	virtual	Item*		Clone() const { return new Shield(*this); }
-	virtual Type		getTypeOfItem() const { return SHIELD; }
+	virtual	Shield*		Clone() const { return new Shield(*this); }
+	virtual TypeOfItems		getTypeOfItem() const { return SHIELD; }
 	virtual void		print() const { Item::printItem(); }
 
+	virtual size_t		updateDefense(size_t Defense) override{ return Defense + 10; }
 };

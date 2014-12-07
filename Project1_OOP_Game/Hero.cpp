@@ -6,7 +6,7 @@
 using namespace std;
 
 //Constructor
-Hero::Hero() : BasicFeatures() , Cell((char)178)
+Hero::Hero() : BasicFeatures(), Cell((char)178)
 {
 	this->MaxLife = 100;
 	this->Life = 100;
@@ -14,6 +14,23 @@ Hero::Hero() : BasicFeatures() , Cell((char)178)
 	this->Mana = 100;
 	this->Experience = 0;
 	this->Level = 0;
+}
+
+//Load hero from flow
+Hero::Hero(std::ifstream& fin)
+{
+	loadBasicFeatures(fin);
+	loadCell(fin);
+	size_t hLife, hMaxLife, hExperience, hMana, hMaxMana, hLevel;
+	fin >> hLife >> hMaxLife >> hMana >> hMaxMana >> hExperience >> hLevel;
+	setMaxLife(hMaxLife);
+	setLife(hLife);
+	setMaxMana(hMaxMana);
+	setMana(hMana);
+	setExperience(hExperience);
+	setLevel(hLevel);
+	this->gear.loadGear(fin);
+	this->ownBag.loadBag(fin);
 }
 
 //Destructor
@@ -121,13 +138,13 @@ size_t Hero::getLevel() const
 }
 
 //Get Hero gear
-Gear Hero::getGear() const
+const Gear& Hero::getGear() const
 {
 	return this->gear;
 }
 
 //Geto Hero bag
-Bag Hero::getOwnBag() const
+const Bag& Hero::getOwnBag() const
 {
 	return this->ownBag;
 }
@@ -176,10 +193,10 @@ void Hero::setMaxMana(size_t MaxMana)
 //Set Experience to Hero
 void Hero::setExperience(size_t Experience)
 {
-	if(Experience < 100 && Experience > 0)
+	if(Experience < 100 && Experience >= 0)
 		this->Experience = Experience;
 	else
-		cout << "Every 100 XP = 1 level and because of that this Hero cant have more than 100 XP and less than 1" << endl;
+		cout << "Every 100 XP = 1 level and because of that this Hero cant have more than 100 XP and less than 0" << endl;
 }
 
 //Set Level to Hero
@@ -192,21 +209,19 @@ void Hero::setLevel(size_t Level)
 }
 
 //Set Gear to Hero
-void Hero::setGear(Gear gear)
+void Hero::setGear(const Gear& gear)
 {
-	//if(gear.isValid())
+	if (gear.GearIsValid())
 		this->gear = gear;
-	//else
-	//	cout << "This gear is not valid!" << endl;
+	else
+		cout << "This gear is not valid!" << endl;
 }
 
 //Set Bag to Hero
-void Hero::setOwnBag(const Bag newOwnBag)
+void Hero::setOwnBag(const Bag& newOwnBag)
 {
 	if(newOwnBag.isValid())
-	{
 		this->ownBag = newOwnBag;
-	}
 	else
 		cout << "Dont have bag to set!" << endl;
 }
@@ -218,11 +233,17 @@ void Hero::addItemInBag(const Item* newItem)
 	this->ownBag.addItemInBag(newItem);
 }
 
-////Add Item to gear from bag
-//void Hero::setItemToGearFromBag(const Item* ItemForGear)
-//{
-//	gear.setOwnHead(ItemForGear);
-//}
+
+
+//Add Item to gear from bag
+void Hero::setItemToGearFromBag(Item* ItemForGear)
+{
+	this->gear.setItemInGear(ItemForGear);
+	setAttack(getAttack() + ItemForGear->getAttack());
+	setDefense(getDefense() + ItemForGear->getDefense());
+	setMaxMana(getMaxMana() + ItemForGear->getMana());
+}
+
 
 
 //Defense reduce attack for battle (1 def ~ 2% att)
@@ -252,6 +273,10 @@ void Hero::attackMonster(Monster& monster)
 	{
 		monster.removeHealth(timeHeroAttack);
 		removeHealth(getAttack()/10);
+		monster.printMonster();
+		cout << endl << "vs" << endl << endl;
+		printHero();
+		cout << endl;
 		cout << "Hero hit monster and get " << getAttack()/10 << " health from monster life!" << endl;
 		cout << "Hero life: " << getLife() << "	Monster life:" << monster.getLife() << endl; 
 	}
@@ -259,6 +284,10 @@ void Hero::attackMonster(Monster& monster)
 	{
 		removeHealth(timeHeroAttack);
 		monster.removeHealth(monster.getAttack());
+		monster.printMonster();
+		cout << endl << "vs" << endl << endl;
+		printHero();
+		cout << endl;
 		cout << "Monster attack and hero time attack is equal and get from hero " <<  timeHeroAttack << " hp and from monster " 
 			<< monster.getAttack() << "hp!" << endl;
 		cout << "Hero life: " << getLife() << "	Monster life:" << monster.getLife() << endl;
@@ -267,6 +296,10 @@ void Hero::attackMonster(Monster& monster)
 	{
 		removeHealth(timeMonsAttack);
 		monster.removeHealth(getAttack() / 10);
+		monster.printMonster();
+		cout << endl << "vs" << endl << endl;
+		printHero();
+		cout << endl;
 		cout << "Monster hit hero and get " << timeMonsAttack << " health from hero life!" << endl;
 		cout << "Hero life: " << getLife() << "	Monster life:" << monster.getLife() << endl;
 	}
@@ -301,13 +334,10 @@ bool Hero::isAlive() const
 //Print Hero
 void Hero::printHero() const
 {
-	//cout << "==================== New Hero ===========================" << endl;
 	BasicFeatures::printBasicFeatures();
 	cout << "Life: " << getLife() << "/" << getMaxLife() << endl;
 	cout << "Mana: " << getMana() << "/" << getMaxMana() << endl;
-	cout << "Level(Experiance): " << getLevel() << "(" << getExperience() << ")" << endl; 
-	getGear().printGear();
-	getOwnBag().printBag();
+	cout << "Level(Experiance): " << getLevel() << "(" << getExperience() << ")" << endl;
 }
 
 //Save hero in flow
@@ -316,25 +346,8 @@ ostream& Hero::saveHero(ofstream& fout) const
 	saveBasicFeatures(fout);
 	saveCell(fout);
 	fout << getLife() << endl << getMaxLife() << endl << getMana() << endl
-		<< getMaxMana() << endl << getExperience() << endl << getLevel() << endl;
-	//this->gear.saveGear(fout);
-	//this->ownBag.saveBag(fout);
+		<< getMaxMana() << endl << getExperience() << endl << getLevel();
+	this->gear.saveGear(fout);
+	this->ownBag.saveBag(fout);
 	return fout;
-}
-
-//Load hero from flow
-void Hero::loadHero(std::ifstream& fin)
-{
-	loadBasicFeatures(fin);
-	loadCell(fin);
-	size_t hLife, hMaxLife, hExperience, hMana, hMaxMana, hLevel;
-	fin >> hLife >> hMaxLife >> hMana >> hMaxMana >> hExperience >> hLevel;
-	setMaxLife(hMaxLife);
-	setLife(hLife);
-	setMaxMana(hMaxMana);
-	setMana(hMana);
-	setExperience(hExperience);
-	setLevel(hLevel);
-	//this->gear.loadGear(fin);
-	//load bag ...
 }

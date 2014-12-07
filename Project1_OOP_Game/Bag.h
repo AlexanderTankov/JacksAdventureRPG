@@ -28,6 +28,7 @@ public:
 	void			printBag() const;
 	std::ofstream&	saveBag(std::ofstream& fout) const;
 	void			loadBag(std::ifstream& fin);
+	Item*			pullOutItem(size_t pos);
 
 private:
 	size_t			capacity;

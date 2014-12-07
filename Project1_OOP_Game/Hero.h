@@ -6,12 +6,13 @@
 #include "Monster.h"
 #include "Bag.h"
 
-class Hero : public BasicFeatures , public Cell
+class Hero : public BasicFeatures, public Cell
 {
 public:
 	Hero();
 	~Hero();
 	Hero(const Hero& other);
+	Hero(std::ifstream& fin);
 	Hero(const char* Name, size_t Attack, size_t Defense, size_t MaxLife, size_t MaxMana, size_t Row, size_t Column);
 
 	bool			operator == (const Hero& other);
@@ -24,8 +25,10 @@ public:
 	size_t			getMaxMana() const; 
 	size_t			getExperience() const;
 	size_t			getLevel() const;
-	Gear			getGear() const; 
-	Bag				getOwnBag() const;
+	const Gear&		getGear() const;
+	Gear&			getGearRef() { return this->gear; }
+	const Bag&		getOwnBag() const;
+	Bag&			getOwnBagRef() { return this->ownBag; }
 	
 	void			setLife(size_t Life);
 	void			setMaxLife(size_t MaxLife); 
@@ -33,11 +36,11 @@ public:
 	void			setMaxMana(size_t MaxMana);
 	void			setExperience(size_t Experience);
 	void			setLevel(size_t Level);
-	void			setGear(Gear gear); 
-	void			setOwnBag(const Bag newOwnBag);
+	void			setGear(const Gear& gear); 
+	void			setOwnBag(const Bag& newOwnBag);
 
 	void			addItemInBag(const Item* newItem);
-	//void			setItemToGearFromBag(const Item* ItemForGear);
+	void			setItemToGearFromBag(Item* ItemForGear);
 
 	size_t			reduceAttack(size_t Defense) const;
 	void			removeHealth(size_t Attack);
@@ -46,7 +49,6 @@ public:
 	void			printHero() const;
 
 	std::ostream&	saveHero(std::ofstream& fout) const;
-	void			loadHero(std::ifstream& fin);
 
 private:
 	size_t			Life;

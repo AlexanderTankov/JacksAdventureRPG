@@ -104,19 +104,19 @@ void BasicFeatures::setName(const char* Name)
 //Set Attack
 void BasicFeatures::setAttack(size_t Attack)
 {
-	if (Attack > 0)
+	if (Attack >= 0)
 		this->Attack = Attack;
 	else 
-		cout << "Attack of this hero cant be less than 1" << endl;
+		cout << "Attack cant be less than 0" << endl;
 }
 
 //Set Defense
 void BasicFeatures::setDefense(size_t Defense)
 {
-	if(Defense > 0)
+	if (Defense >= 0)
 		this->Defense = Defense;
 	else 
-		cout << "Defense of hero cant be less than 1" << endl;
+		cout << "Defense cant be less than 0" << endl;
 }
 
 
@@ -166,4 +166,18 @@ ostream& BasicFeatures::saveBasicFeatures(ofstream& out) const
 	out << getAttack() << endl;
 	out << getDefense() << endl;
 	return out;
+}
+
+BasicFeatures& BasicFeatures::ReturnNullBF()
+{
+	setName("NU");
+	this->Attack = 0;
+	this->Defense = 0;
+	return *this;
+
+}
+
+bool BasicFeatures::BFIsValid() const
+{
+	return (!(strcmp(this->Name, "NU")));
 }

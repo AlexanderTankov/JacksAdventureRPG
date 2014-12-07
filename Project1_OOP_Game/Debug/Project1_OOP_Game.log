@@ -1,10 +1,25 @@
-﻿Build started 25.6.2014 г. 23:57:37.
-     1>Project "C:\Users\Alexander\Documents\GitHub\JacksAdventureRPG\Project1_OOP_Game\Project1_OOP_Game.vcxproj" on node 2 (Build target(s)).
+﻿Build started 7.12.2014 г. 13:22:26.
+     1>Project "D:\JacksAdventureRPG\Project1_OOP_Game\Project1_OOP_Game.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Map.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Bag.cpp BasicFeatures.cpp Cell.cpp Game.cpp Gear.cpp Hero.cpp Item.cpp Main.cpp Map.cpp Monster.cpp
+         Monster.cpp
          Map.cpp
+         Main.cpp
+         Item.cpp
+         Hero.cpp
+     1>d:\jacksadventurerpg\project1_oop_game\hero.cpp(253): warning C4244: '-=' : conversion from 'double' to 'size_t', possible loss of data
+         Gear.cpp
+         Game.cpp
+     1>d:\jacksadventurerpg\project1_oop_game\game.cpp(15): warning C4996: 'getch': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _getch. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\conio.h(131) : see declaration of 'getch'
+     1>d:\jacksadventurerpg\project1_oop_game\game.cpp(48): warning C4018: '<' : signed/unsigned mismatch
+         Cell.cpp
+         BasicFeatures.cpp
+         Bag.cpp
+         Generating Code...
+     1>d:\jacksadventurerpg\project1_oop_game\gear.cpp(93): warning C4715: 'Gear::getOwnItem' : not all control paths return a value
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Alexander\Documents\GitHub\JacksAdventureRPG\Debug\Project1_OOP_Game.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Alexander\Documents\GitHub\JacksAdventureRPG\Debug\Project1_OOP_Game.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Alexander\Documents\GitHub\JacksAdventureRPG\Debug\Project1_OOP_Game.lib" /MACHINE:X86 Debug\Bag.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\JacksAdventureRPG\Debug\Project1_OOP_Game.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\JacksAdventureRPG\Debug\Project1_OOP_Game.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\JacksAdventureRPG\Debug\Project1_OOP_Game.lib" /MACHINE:X86 Debug\Bag.obj
          Debug\BasicFeatures.obj
          Debug\Cell.obj
          Debug\Game.obj
@@ -14,9 +29,9 @@
          Debug\Main.obj
          Debug\Map.obj
          Debug\Monster.obj
-         Project1_OOP_Game.vcxproj -> C:\Users\Alexander\Documents\GitHub\JacksAdventureRPG\Debug\Project1_OOP_Game.exe
-     1>Done Building Project "C:\Users\Alexander\Documents\GitHub\JacksAdventureRPG\Project1_OOP_Game\Project1_OOP_Game.vcxproj" (Build target(s)).
+         Project1_OOP_Game.vcxproj -> D:\JacksAdventureRPG\Debug\Project1_OOP_Game.exe
+     1>Done Building Project "D:\JacksAdventureRPG\Project1_OOP_Game\Project1_OOP_Game.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:01.11
+Time Elapsed 00:00:08.67

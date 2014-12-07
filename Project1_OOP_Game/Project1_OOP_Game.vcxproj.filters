@@ -71,22 +71,7 @@
     <ClInclude Include="Head.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Shoulders.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Chest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Gloves.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Boots.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Belt.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Pants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Ring.h">

@@ -1,15 +1,18 @@
 #include <iostream>
+#include <fstream>
+#include <conio.h>
 #include "Game.h"
+#include "Hero.h"
 
 //Starting game
 void Game::startGame()
 {
 	system("cls");
 	MapInGame.printMap();
-	while (this->MapInGame.getOwnHero().getLife() != 0)
+	while (this->MapInGame.getOwnHero()->getLife() != 0)
 	{
 		char move;
-		cin >> move;
+		move = getch();
 		switch (move)
 		{
 		case 'a':
@@ -24,24 +27,36 @@ void Game::startGame()
 		case 'd':
 			this->MapInGame.moveHeroRight();
 			break;
+		case 'c':
+			system("cls");
+			this->MapInGame.getOwnHero()->printHero();
+			this->MapInGame.getOwnHero()->getGear().printGear();
+			break;
+		case 'b':
+			system("cls");
+			if (this->MapInGame.getOwnHero()->getOwnBag().isValid())
+			{
+				this->MapInGame.getOwnHero()->getOwnBag().printBag();
+				cout << "If you want to equip any item click 'Y' or 'N': ";
+				char tempChar;
+				cin >> tempChar;
+				if (tempChar == 'Y' || tempChar == 'y')
+				{
+					cout << "Enter position of item in your bag: ";
+					int temp;
+					cin >> temp;
+					if ((temp - 1) >= 0 && (temp - 1) < this->MapInGame.getOwnHero()->getOwnBagRef().getFilledCells())
+						this->MapInGame.getOwnHero()->setItemToGearFromBag
+						(this->MapInGame.getOwnHero()->getOwnBagRef().pullOutItem(temp - 1));
+					else
+						cout << "You dont have Item with this number!" << endl;
+				}
+			}
+			break;
 		default:
 			break;
 		}
 	}
-}
-
-//Save game in flow
-std::ostream& Game::saveGame() const
-{
-	ofstream Save("Load.txt");
-	if (!Save)
-	{
-		cout << "The file is not open";
-		//da hvurlq excep
-	}
-	MapInGame.saveMap(Save);
-	HeroInGame.saveHero(Save);
-	return Save;
 }
 
 //Load game from flow
@@ -53,9 +68,11 @@ void Game::loadGame()
 		cout << "The file is not open";
 		return;
 	}
+	size_t MapLevel;
+	fin >> MapLevel;
+	MapInGame.setLevel(MapLevel);
 	MapInGame.loadMap(fin);
-	HeroInGame.loadHero(fin);
-	MapInGame.setHero(HeroInGame);
+	MapInGame.setHero(new Hero(fin));
 
 	startGame();
 }

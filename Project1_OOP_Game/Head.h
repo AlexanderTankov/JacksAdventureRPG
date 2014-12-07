@@ -10,8 +10,9 @@ public:
 	Head(const Item* other)  : Item(*other) {}
 	Head(const char* Name, size_t Attack, size_t Defense, size_t Mana) : Item(Name, Attack, Defense, Mana) {}
 
-	virtual	Item*		Clone() const { return new Head(*this); }
-	virtual Type		getTypeOfItem() const { return HEAD; }
+	virtual	Head*		Clone() const { return new Head(*this); }
+	virtual TypeOfItems		getTypeOfItem() const { return HEAD; }
 	virtual void		print() const { Item::printItem(); }
 
+	virtual size_t		updateLife(size_t MaxLife) override{ return MaxLife + 30; }
 };
