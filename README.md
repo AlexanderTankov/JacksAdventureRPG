@@ -1,19 +1,18 @@
 ﻿# JacksAdventureRPG
 RPG for university
 
-Това е компютърна игра, в която управлявате герой, който може да се движи по двуизмерна карта, да събира различни предмети и да влиза в схватки с различни чудовища.
+This is a computer game in which you control a hero who can move on a 2-dimensional map, collect various objects and enter battles with different monsters.
 
-Героят в играта има различни характеристики и може да събира, носи и използва различни предмети.
+The hero has different characteristics and can collect, carry and use varoius objects.
 
-Играта се състои от различни нива, по които героят може да се придвижва. Всяко ниво представлява двуизмерна карта, подобна на шахматна дъска, но с произволен размер. 
+The game consists of different levels through which the hero can move. Every level is a 2-dimensional map, similar to a chess board but with an arbitrary size.
 
-Героят може да се придвижва нагоре, надолу, наляво или надясно по картата. Клетките на картата могат да бъдат проходими или непроходими (например стена). 
+The hero can move up, down, left and right on the map. The cells can be passable or impassable(e.g a wall).
 
-Картата за дадено ниво изглежда например така: 
+The map for a given level looks like this:
 
 ![alt tag](https://github.com/AlexanderTankov/JacksAdventureRPG/blob/master/map.png)
 
-В картата символът 'н' показва местоположението на героя, символът 'Ё' показва местоположението на някакъв предмет/съкровище, символите '▓' обозначават стени, символите 'ъ' обозначават чудовища, а символите 'э' обозначават местата, на които можеш да запишеш моментното състояние на играта.
-Символът '▌' обозначава прехода, които води до следващото ниво (следващата карта).
+In the map the symbol '_' shows the location of the hero, the symbol '_' shows the location of an object/treasure, the symbols '_' denote walls, the symbols '_' denote monsters and the symbols '_' denote the places on which you can save the current state of the game. The symbol '_' denotes the passage that leads to the next level (next map).
 
-Играта позволява да се записва текущото състояние (характеристики на героя, докъде е стигнал, какви предмети носи и т.н.) 
+The game allows saving the current state (hero characteristics, his location, what objects they carry, etc.) 
