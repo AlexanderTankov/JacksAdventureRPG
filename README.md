@@ -13,6 +13,6 @@ The map for a given level looks like this:
 
 ![alt tag](https://github.com/AlexanderTankov/JacksAdventureRPG/blob/master/map.png)
 
-In the map the symbol '_' shows the location of the hero, the symbol '_' shows the location of an object/treasure, the symbols '_' denote walls, the symbols '_' denote monsters and the symbols '_' denote the places on which you can save the current state of the game. The symbol '_' denotes the passage that leads to the next level (next map).
+In the map the symbol 'н' shows the location of the hero, the symbol 'Ё' shows the location of an object/treasure, the symbols '▓' denote walls, the symbols 'ъ' denote monsters and the symbols 'э' denote the places on which you can save the current state of the game. The symbol '▌' denotes the passage that leads to the next level (next map).
 
 The game allows saving the current state (hero characteristics, his location, what objects they carry, etc.) 
